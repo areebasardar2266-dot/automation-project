@@ -1,0 +1,287 @@
+{
+  "name": "Order processing and email automation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "=welcome-lead",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -912,
+        -48
+      ],
+      "id": "937a4825-215e-405a-a97c-110d947d7ee9",
+      "name": "Webhook",
+      "webhookId": "4ccafa09-093b-471b-bd3a-cd5c7cff4d29"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1uAxhZbtfdTnQj4_V9mvVBr-m5ZAPuJSm-lerJK-88Ds",
+          "mode": "list",
+          "cachedResultName": "Leads Database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1uAxhZbtfdTnQj4_V9mvVBr-m5ZAPuJSm-lerJK-88Ds/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1uAxhZbtfdTnQj4_V9mvVBr-m5ZAPuJSm-lerJK-88Ds/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $json.email_sender.first_name }}{{ $json.email_sender.last_name }}",
+            "Date": "={{ $json.body.date }}\n\n",
+            "Email": "={{ $json.email_address }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -16,
+        -128
+      ],
+      "id": "c4463c31-b54d-4639-a3bd-eee07c2e49b1",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "wsUjnY08I6aKehos",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "areebasardar2244@gmail.com",
+        "subject": "=\"Invalid Email Submission Detected\"",
+        "message": "=The following lead had an invalid email:\nName:{{ $json.email_sender.first_name }} Email:{{ $json.email_address }} Date:{{ $json.email_domain.date_expires }} ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -16,
+        64
+      ],
+      "id": "5825d0e0-a97b-433d-b0ff-d77cc2a91f3b",
+      "name": "Send a message",
+      "webhookId": "18adc4dc-ffb5-429c-9460-ffced7c292f1",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "kB1SdQXNh9baPAQL",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://emailreputation.abstractapi.com/v1/?api_key=4c5954576d314beab3242c965d75f2bb&email=\n{{ $json.body.email }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -688,
+        48
+      ],
+      "id": "7e74a4d4-306b-4f03-ab63-fa5b25cf4372",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "3c2c2bea-77a6-46f1-ae28-0a23df06156a",
+              "leftValue": "={{$json[\"email_deliverability\"][\"status\"]}}",
+              "rightValue": "deliverable",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -240,
+        -32
+      ],
+      "id": "f0f174dd-4a11-41fa-b54e-2dce4de8a09f",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -464,
+        -32
+      ],
+      "id": "ae664ec8-37ff-42f9-93f6-380b660e63e7",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "=\"🎉 Welcome to Our Community, {{ $json.Name }}!\"",
+        "message": "=Hi {{ $json.Name }},  Thank you for signing up!  We're excited to have you on board.   You'll start receiving updates and offers soon.  Best regards,   Areeba's Automation System 🤖",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        208,
+        -128
+      ],
+      "id": "280f03aa-33a2-45e8-b735-42e378de543b",
+      "name": "Send a message1",
+      "webhookId": "f0b99565-fc72-4be1-aa59-502327e06bda",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "kB1SdQXNh9baPAQL",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "72bb63b8-e204-49e3-ae18-070c50ed2d79",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b91d0ddba477792f9f57ab5884b3bc8611feaa19780142e80586b8a0f6634953"
+  },
+  "id": "6fwmWlMM6pUqmB0k",
+  "tags": []
+}
