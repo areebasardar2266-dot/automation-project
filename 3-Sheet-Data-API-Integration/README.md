@@ -29,7 +29,7 @@ Workflow Steps:
 ---
 
 ## 📷 Workflow Screenshot
-![Workflow Screenshot](screenshot.png)
+![Sheet Data API Integration](Sheet-Data-API-Integration.png)
 
 ---
 
