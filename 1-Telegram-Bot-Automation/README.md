@@ -40,7 +40,7 @@ The workflow dynamically routes messages based on different conditions and execu
 ---
 
 ## 📷 Workflow Screenshot
-![Workflow Screenshot](screenshot.png)
+![Workflow Screenshot](Telegram-Bot-Automation.png)
 
 ---
 
