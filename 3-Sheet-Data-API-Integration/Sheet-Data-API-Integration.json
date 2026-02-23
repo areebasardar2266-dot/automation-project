@@ -1,0 +1,128 @@
+{
+  "name": "Sheet-Data-API-Integration",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -224,
+        32
+      ],
+      "id": "096b9896-19b2-48a1-957c-5d9705e5b303",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1-O2NOtQxr0D8tKhlZrJTvEPN29jhPkJqBJnLPUEj2FU",
+          "mode": "list",
+          "cachedResultName": "Tweet Scheduler",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-O2NOtQxr0D8tKhlZrJTvEPN29jhPkJqBJnLPUEj2FU/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-O2NOtQxr0D8tKhlZrJTvEPN29jhPkJqBJnLPUEj2FU/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -48,
+        32
+      ],
+      "id": "d80bd1b1-5aec-48e5-9211-3d09cd12daef",
+      "name": "Get row(s) in sheet",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "wsUjnY08I6aKehos",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all()\n  .filter(item => item.json.status === 'pending')\n  .map(item => ({\n    json: {\n      tweet: item.json.tweet_text.trim()\n    }\n  }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        176,
+        32
+      ],
+      "id": "c5312508-3973-40c1-ba14-d66e793eaac9",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://webhook.site/9db6a320-c32f-4cbc-b7e2-da36497ebb14",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={ \"tweet\": \"={{$json['tweet']}}\" }\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        368,
+        32
+      ],
+      "id": "9c79ec97-3ec5-4619-9dee-e68246adbcd5",
+      "name": "HTTP Request"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ffd7e2ae-3cec-47cf-a37e-ac6e185a12c0",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b91d0ddba477792f9f57ab5884b3bc8611feaa19780142e80586b8a0f6634953"
+  },
+  "id": "fLKDrCp7hdbpgzXO",
+  "tags": []
+}
