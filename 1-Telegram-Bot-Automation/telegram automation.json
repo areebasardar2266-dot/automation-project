@@ -1,0 +1,589 @@
+{
+  "name": "telegram automation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "telegram",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -800,
+        864
+      ],
+      "id": "a39b1e59-96f5-4b04-9408-c363c6d23275",
+      "name": "Webhook",
+      "webhookId": "7490e5ef-d19c-4f00-9b11-feaa6a3e6818"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4582b0ec-11b5-47fe-9f73-403a84345b71",
+              "name": "text",
+              "value": "= {{$json.body.message.text}}",
+              "type": "string"
+            },
+            {
+              "id": "30a80ba2-4bf6-4bc9-8991-45c46464679a",
+              "name": "chat_id",
+              "value": "={{ $json.body.message.chat.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -576,
+        864
+      ],
+      "id": "575f4a23-f66d-426d-930c-9c4e75df60b7",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.telegram.org/bot8581857307:AAHhPfxtU1HLR_53Gs9QxNXqHbGDoVlrRq0/sendMessage",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"chat_id\":{{ $('Webhook').item.json.body.message.chat.id }},\n  \"text\": \"Thanks{{ $json.name }} ✅\\n\\nPlease select a service:\\n1️⃣ Haircut\\n2️⃣ Beard\\n3️⃣ Facial\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        320,
+        576
+      ],
+      "id": "89c0f41f-514d-4fa3-b107-5d12a446f9f3",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.telegram.org/bot8581857307:AAHhPfxtU1HLR_53Gs9QxNXqHbGDoVlrRq0/sendMessage",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"chat_id\":{{ $('Webhook').item.json.body.message.chat.id }} ,\n  \"text\": \"Welcome 👋\\nPlease enter your full name\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        96,
+        384
+      ],
+      "id": "1b86f79c-63fc-4609-9569-76d9358697a0",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4e33b5fc-bd8c-4f9f-9a4c-9d109d76da38",
+              "leftValue": "={{ $json.text }}",
+              "rightValue": "/start",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -352,
+        864
+      ],
+      "id": "131007e5-cd92-4a42-80e7-43c453e50c54",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2a1f9963-5b66-47de-b848-6ed14469b58f",
+              "leftValue": "={{ $('Edit Fields').item.json.text }}",
+              "rightValue": "1",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        96,
+        1056
+      ],
+      "id": "41b72ab6-04f5-4cea-879f-d817df178523",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.telegram.org/bot8581857307:AAHhPfxtU1HLR_53Gs9QxNXqHbGDoVlrRq0/sendMessage",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"chat_id\": {{ $('Edit Fields').item.json.chat_id }},\n  \"text\": \"You selected Haircut ✂️\\nPlease enter appointment date (DD-MM-YYYY)\"\n}\n\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        544,
+        768
+      ],
+      "id": "2cbd924d-9ecf-46a8-a87e-8529a89803e7",
+      "name": "HTTP Request3"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2a1f9963-5b66-47de-b848-6ed14469b58f",
+              "leftValue": "={{ $('Edit Fields').item.json.text }}",
+              "rightValue": "^[A-Za-z ]{3,}$",
+              "operator": {
+                "type": "string",
+                "operation": "regex"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -128,
+        960
+      ],
+      "id": "89929598-66f6-4197-8392-e22521d9610c",
+      "name": "If4"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2a1f9963-5b66-47de-b848-6ed14469b58f",
+              "leftValue": "={{ $json.text }}\n\n",
+              "rightValue": "^\\s*\\d{4}-\\d{2}-\\d{2}\\s*$",
+              "operator": {
+                "type": "string",
+                "operation": "regex"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        320,
+        1152
+      ],
+      "id": "daa88e9e-4bd9-4c46-a7a1-31210c350a9d",
+      "name": "If5"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.telegram.org/bot8581857307:AAHhPfxtU1HLR_53Gs9QxNXqHbGDoVlrRq0/sendMessage",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"chat_id\": {{ $('Edit Fields').item.json.chat_id }},\n  \"text\": \"You selected Haircut on {{ $('Edit Fields').item.json.text }}.\\nPlease enter appointment time (HH:MM)\"\n}\n\n\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        768,
+        960
+      ],
+      "id": "84eb5db1-981c-42ff-8332-a7e74be5da1a",
+      "name": "HTTP Request8"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.telegram.org/bot8581857307:AAHhPfxtU1HLR_53Gs9QxNXqHbGDoVlrRq0/sendMessage",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"chat_id\": {{ $('Edit Fields').item.json.chat_id }},\n  \"text\": \"❌ Invalid date format.\\nPlease use DD-MM-YYYY\"\n}\n\n\n\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        768,
+        1344
+      ],
+      "id": "79ac55cf-0064-45d6-84f5-072ee4e95fa1",
+      "name": "HTTP Request9"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.telegram.org/bot8581857307:AAHhPfxtU1HLR_53Gs9QxNXqHbGDoVlrRq0/sendMessage",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"chat_id\": \"{{ $getWorkflowStaticData('global').session.chat_id }}\",\n  \"text\": \"✅ Appointment Confirmed\\n\\n👤 Name: {{ $getWorkflowStaticData('global').session.name }}\\n💼 Service: {{ $getWorkflowStaticData('global').session.service }}\\n📅 Date: {{ $getWorkflowStaticData('global').session.date }}\\n⏰ Time: {{ $getWorkflowStaticData('global').session.time }}\"\n}\n\n\n\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        992,
+        1152
+      ],
+      "id": "289d7fa9-14b5-468d-849e-646a396b6e88",
+      "name": "HTTP Request10"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a00677ee-6d4d-4084-a0c6-e5d19d2d5605",
+              "leftValue": "={{ $json.text.trim() }}",
+              "rightValue": "^([01]\\d|2[0-3]):([0-5]\\d)$",
+              "operator": {
+                "type": "string",
+                "operation": "regex"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        544,
+        1248
+      ],
+      "id": "35b2bc00-e7f5-4715-83c4-9a469966fba1",
+      "name": "If6"
+    },
+    {
+      "parameters": {
+        "jsCode": "const store = $getWorkflowStaticData('global');\nconst chatId = $json.chat_id;\n\nif (!store[chatId]) {\n  store[chatId] = {\n    name: null,\n    service: null,\n    date: null,\n    time: null\n  };\n}\n\nreturn items;\n\n\n\n\n\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -128,
+        384
+      ],
+      "id": "27ae65e4-63ce-49b4-8001-03bb03d3d46c",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $getWorkflowStaticData('global');\ndata.session = data.session || {};\n\n// Telegram text safely read karo\nconst text =\n  $json.body?.message?.text ||\n  $json.text ||\n  '';\n\ndata.session.name = text.trim();\n\nreturn items;\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        96,
+        576
+      ],
+      "id": "a6328528-f5e5-4e9a-bff5-e9161495c9ce",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $getWorkflowStaticData('global');\ndata.session = data.session || {};\n\n// Telegram text safely read karo\nconst text =\n  $json.body?.message?.text ||\n  $json.text ||\n  '';\n\ndata.session.service = text.trim();\n\nreturn items;\n\n\n\n\n\n\n\n\n\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        320,
+        768
+      ],
+      "id": "048b976e-9c03-41b9-ab88-430514f9c9d2",
+      "name": "Code2"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $getWorkflowStaticData('global');\ndata.session = data.session || {};\n\n// Telegram text safely read karo\nconst text =\n  $json.body?.message?.text ||\n  $json.text ||\n  '';\n\ndata.session.date = text.trim();\n\nreturn items;\n\n\n\n\n\n\n\n\n\n\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        544,
+        960
+      ],
+      "id": "fea90285-ff9e-4f91-8103-9c36e2600e28",
+      "name": "Code3"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $getWorkflowStaticData('global');\n\ndata.session = data.session || {};\n\nreturn [\n  {\n    json: {\n      chat_id: data.session.chat_id,\n      name: data.session.name || 'N/A',\n      service: data.session.service || 'N/A',\n      date: data.session.date || 'N/A',\n      time: data.session.time || 'N/A'\n    }\n  }\n];\n\n\n\n\n\n\n\n\n\n\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        768,
+        1152
+      ],
+      "id": "d21ca1d0-e3af-4558-8a60-c796e12bb134",
+      "name": "Code5"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        []
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        []
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If4": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If5": {
+      "main": [
+        [
+          {
+            "node": "Code3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request3": {
+      "main": [
+        []
+      ]
+    },
+    "HTTP Request8": {
+      "main": [
+        []
+      ]
+    },
+    "If6": {
+      "main": [
+        [
+          {
+            "node": "Code5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code3": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code5": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "4d7f11c3-26fd-4f09-85fa-224b2fc201f5",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b91d0ddba477792f9f57ab5884b3bc8611feaa19780142e80586b8a0f6634953"
+  },
+  "id": "QDZ4O04DuxLmiu86",
+  "tags": []
+}
