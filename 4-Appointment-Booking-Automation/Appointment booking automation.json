@@ -1,0 +1,266 @@
+{
+  "name": "Appointment booking automation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "fake-order",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "75e3d9e4-fbae-4a9c-97e7-c204e60f7401",
+      "name": "Webhook",
+      "webhookId": "3a6beece-d5bd-4e41-90c4-1c59c69738a2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "467daad0-db56-48c4-a56b-aeb73e53f1ba",
+              "name": "Name",
+              "value": "={{ $json.body.customer_name }}",
+              "type": "string"
+            },
+            {
+              "id": "c8c9f78a-8adb-4145-93a4-198d2f8695c7",
+              "name": "OrderId",
+              "value": "={{ $json.body.order_id }}",
+              "type": "string"
+            },
+            {
+              "id": "f3f70d28-70fa-417a-aa2c-79afc8f44bbc",
+              "name": "Email",
+              "value": "={{ $json.body.email }}",
+              "type": "string"
+            },
+            {
+              "id": "bde2a50e-f01b-4e3b-9ecc-ffb20d0d90aa",
+              "name": "Product ",
+              "value": "={{ $json.body.product }}",
+              "type": "string"
+            },
+            {
+              "id": "03826799-81d2-4715-b501-c30efe0d6a41",
+              "name": "Price",
+              "value": "={{ $json.body.price }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        0
+      ],
+      "id": "8ecea1aa-d08a-42a6-9f3c-c0978a47dccf",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.pdfshift.io/v3/convert/pdf",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Basic c2tfMDNiYzJkMzM2MzliMGY2NDRmOWZlNGE4YjNmNGQ3MWIyZjU4YmRhNDo="
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "source",
+              "value": "=={{ $json.name }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        640,
+        1248
+      ],
+      "id": "4d8c0f79-6580-48b6-b954-a39f106568f2",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1_7_lH7CsIJskDIMZNiitldCjoayU9o3XSScosvNvxa0",
+          "mode": "list",
+          "cachedResultName": "new sheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_7_lH7CsIJskDIMZNiitldCjoayU9o3XSScosvNvxa0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_7_lH7CsIJskDIMZNiitldCjoayU9o3XSScosvNvxa0/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Order ID": "={{ $json.OrderId }}",
+            "Name": "={{ $json.Name }}",
+            "Email": "={{ $json.Email }}",
+            "Product": "={{ $json['Product '] }}",
+            "Price ": "={{ $json.Price }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Order ID",
+              "displayName": "Order ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Product",
+              "displayName": "Product",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Price ",
+              "displayName": "Price ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        416,
+        0
+      ],
+      "id": "d2febbc5-39c6-480e-9449-26b49226b4eb",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "wsUjnY08I6aKehos",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "=Order Confirmation – {{ $json['Order ID'] }}",
+        "message": "=Hi {{ $json.Name }},  Your order {{ $('Edit Fields').item.json.OrderId }}  has been received.  Product:{{ $('Edit Fields').item.json['Product '] }} Amount: {{ $('Edit Fields').item.json.Price }} Thank you for shopping with us!",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        624,
+        0
+      ],
+      "id": "f50f14b5-152c-4485-af67-da874f4ba9f8",
+      "name": "Send a message",
+      "webhookId": "3b2e3ad5-5bea-47d1-8f37-a47be1d8355c",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "kB1SdQXNh9baPAQL",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1e5ca2cd-f62b-4097-828c-514a0a495d58",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b91d0ddba477792f9f57ab5884b3bc8611feaa19780142e80586b8a0f6634953"
+  },
+  "id": "vvYRbUgZeWwNdfEP",
+  "tags": []
+}
