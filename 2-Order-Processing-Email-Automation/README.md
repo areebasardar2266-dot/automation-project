@@ -34,7 +34,7 @@ When a new order is received:
 ---
 
 ## 📷 Workflow Screenshot
-![Workflow Screenshot](screenshot.png)
+![Order Processing Automation](order-processing-and-email-automation.png)
 
 ---
 
