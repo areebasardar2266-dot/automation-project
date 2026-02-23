@@ -30,7 +30,7 @@ Workflow Steps:
 ---
 
 ## 📷 Workflow Screenshot
-![Workflow Screenshot](screenshot.png)
+![Appointment Booking Automation](Appointment-booking-automation.png)
 
 ---
 
